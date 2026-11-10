@@ -1,0 +1,3 @@
+packages:
+- path: editor
+  ref: tower-defence-game-editor/0.0.1
