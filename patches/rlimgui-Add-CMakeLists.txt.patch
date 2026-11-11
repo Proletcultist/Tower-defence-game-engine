@@ -1,0 +1,46 @@
+From 62ad54623ef2fc30a7b78162498b2b27545e55d3 Mon Sep 17 00:00:00 2001
+From: Proletcultist <zenin2606@gmail.com>
+Date: Wed, 11 Nov 2026 12:58:25 +0700
+Subject: [PATCH] Add CMakeLists.txt
+
+---
+ CMakeLists.txt | 27 +++++++++++++++++++++++++++
+ 1 file changed, 27 insertions(+)
+ create mode 100644 CMakeLists.txt
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+new file mode 100644
+index 0000000..a091ff8
+--- /dev/null
++++ b/CMakeLists.txt
+@@ -0,0 +1,27 @@
++cmake_minimum_required(VERSION 3.15)
++project(rlimgui CXX)
++
++set(CMAKE_CXX_STANDARD 20)
++# Fail during configuration if compiler doesn't support required c++ standard
++set(CMAKE_CXX_STANDARD_REQUIRED ON)
++
++# Add warning flags
++add_compile_options(-Wall -Wextra -Wpedantic)
++
++find_package(raylib REQUIRED)
++find_package(imgui REQUIRED)
++
++add_library(rlimgui STATIC)
++target_link_libraries(rlimgui PUBLIC raylib imgui)
++target_sources(rlimgui
++    PRIVATE
++    rlImGui.cpp
++    PUBLIC
++        FILE_SET HEADERS
++        FILES 
++            imgui_impl_raylib.h
++            rlImGui.h
++            rlImGuiColors.h
++            extras/FA6FreeSolidFontData.h
++            extras/IconsFontAwesome6.h
++)
+-- 
+2.56.0
+

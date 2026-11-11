@@ -1,0 +1,44 @@
+From 1def80ed78b6a342cd6865917e474a44e8551810 Mon Sep 17 00:00:00 2001
+From: Proletcultist <zenin2606@gmail.com>
+Date: Wed, 11 Nov 2026 12:38:32 +0700
+Subject: [PATCH] Add CMakeLists.txt
+
+---
+ CMakeLists.txt | 25 +++++++++++++++++++++++++
+ 1 file changed, 25 insertions(+)
+ create mode 100644 CMakeLists.txt
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+new file mode 100644
+index 00000000..cd1e31f6
+--- /dev/null
++++ b/CMakeLists.txt
+@@ -0,0 +1,25 @@
++cmake_minimum_required(VERSION 3.15)
++project(imgui CXX)
++
++set(CMAKE_CXX_STANDARD 20)
++# Fail during configuration if compiler doesn't support required c++ standard
++set(CMAKE_CXX_STANDARD_REQUIRED ON)
++
++# Add warning flags
++add_compile_options(-Wall -Wextra -Wpedantic)
++
++add_library(imgui STATIC)
++
++target_sources(imgui
++    PRIVATE
++        imgui_demo.cpp
++        imgui_draw.cpp
++        imgui_tables.cpp
++        imgui_widgets.cpp
++        imgui.cpp
++)
++
++target_include_directories(imgui
++    PUBLIC .
++    PUBLIC backends
++)
+-- 
+2.56.0
+
