@@ -1,10 +1,11 @@
 #include "raylib.h"
-
 #include "imgui.h"
 #include "rlImGui.h"
 
 #include "menu_bar.h"
 #include "hierarchy_panel.h"
+#include "map_view.h"
+#include "inspector_panel.h"
 
 int main()
 {
@@ -41,7 +42,59 @@ int main()
         rlImGuiBegin();
 
         exitRequested = DrawMenuBar();
-		DrawHierarchyPanel(300.0f, 600.0f);
+
+        ImGui::SetNextWindowPos(ImVec2(0.0f, 20.0f));
+        ImGui::SetNextWindowSize(
+            ImVec2(
+                static_cast<float>(GetScreenWidth()),
+                static_cast<float>(GetScreenHeight() - 20)
+            )
+        );
+
+        ImGui::Begin(
+            "Editor",
+            nullptr,
+            ImGuiWindowFlags_NoTitleBar |
+            ImGuiWindowFlags_NoCollapse |
+            ImGuiWindowFlags_NoResize |
+            ImGuiWindowFlags_NoMove
+        );
+
+		const ImVec2 availableSize = ImGui::GetContentRegionAvail();
+
+		constexpr float hierarchyWidth = 320.0f;
+		constexpr float inspectorWidth = 300.0f;
+		constexpr float spacing = 8.0f;
+
+		const float mapWidth =
+			availableSize.x -
+			hierarchyWidth -
+			inspectorWidth -
+			spacing * 2.0f;
+
+		const float panelHeight = availableSize.y;
+
+		DrawHierarchyPanel(
+			hierarchyWidth,
+			panelHeight
+		);
+
+		ImGui::SameLine(0.0f, spacing);
+
+		DrawMapView(
+			mapWidth,
+			panelHeight
+		);
+
+		ImGui::SameLine(0.0f, spacing);
+
+		DrawInspectorPanel(
+			inspectorWidth,
+			panelHeight
+		);
+
+        ImGui::End();
+
         rlImGuiEnd();
 
         EndDrawing();
