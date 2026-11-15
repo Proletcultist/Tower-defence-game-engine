@@ -9,4 +9,6 @@ target_link_libraries(tdg-editor
 target_sources(tdg-editor
     PRIVATE
         src/main.cpp
+        src/menu_bar.cpp
+        src/hierarchy_panel.cpp
 )
