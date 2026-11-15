@@ -11,4 +11,6 @@ target_sources(tdg-editor
         src/main.cpp
         src/menu_bar.cpp
         src/hierarchy_panel.cpp
+        src/map_view.cpp
+        src/inspector_panel.cpp
 )
