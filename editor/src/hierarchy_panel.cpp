@@ -80,7 +80,7 @@ void DrawLevelEntities() {
     ImGui::TreePop();
   }
 }
-} // namespace hierarchy
+}
 
 void DrawHierarchyPanel(float width, float height) {
   ImGui::BeginChild("HierarchyPanel", ImVec2(width, height), true);
