@@ -13,4 +13,14 @@ target_sources(tdg-editor
         src/hierarchy_panel.cpp
         src/map_view.cpp
         src/inspector_panel.cpp
+
+        include/editor/menu_bar.h
+        include/editor/hierarchy_panel.h
+        include/editor/map_view.h
+        include/editor/inspector_panel.h
+)
+
+target_include_directories(tdg-editor
+    PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/include
 )

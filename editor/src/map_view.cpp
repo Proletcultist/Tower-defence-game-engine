@@ -1,4 +1,4 @@
-#include "map_view.h"
+#include "editor/map_view.h"
 #include "imgui.h"
 
 namespace

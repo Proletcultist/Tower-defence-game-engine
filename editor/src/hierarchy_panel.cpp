@@ -1,4 +1,4 @@
-#include "hierarchy_panel.h"
+#include "editor/hierarchy_panel.h"
 
 #include "imgui.h"
 
