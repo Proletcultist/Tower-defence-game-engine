@@ -1,107 +1,76 @@
-#include "raylib.h"
 #include "imgui.h"
+#include "raylib.h"
 #include "rlImGui.h"
 
-#include "editor/menu_bar.h"
 #include "editor/hierarchy_panel.h"
-#include "editor/map_view.h"
 #include "editor/inspector_panel.h"
+#include "editor/map_view.h"
+#include "editor/menu_bar.h"
 
-int main()
-{
-    constexpr int screenWidth = 1280;
-    constexpr int screenHeight = 800;
+int main() {
+  constexpr int screenWidth = 1280;
+  constexpr int screenHeight = 800;
 
-    SetConfigFlags(
-        FLAG_MSAA_4X_HINT |
-        FLAG_VSYNC_HINT |
-        FLAG_WINDOW_RESIZABLE
-    );
+  SetConfigFlags(FLAG_MSAA_4X_HINT | FLAG_VSYNC_HINT | FLAG_WINDOW_RESIZABLE);
 
-    InitWindow(
-        screenWidth,
-        screenHeight,
-        "Tower Defence Level Editor"
-    );
+  InitWindow(screenWidth, screenHeight, "Tower Defence Level Editor");
 
-    if (!IsWindowReady())
-    {
-        return 1;
-    }
+  if (!IsWindowReady()) {
+    return 1;
+  }
 
-    SetTargetFPS(144);
-    rlImGuiSetup(true);
+  SetTargetFPS(144);
+  rlImGuiSetup(true);
 
-    bool exitRequested = false;
+  bool exitRequested = false;
 
-    while (!WindowShouldClose() && !exitRequested)
-    {
-        BeginDrawing();
-        ClearBackground(DARKGRAY);
+  while (!WindowShouldClose() && !exitRequested) {
+    BeginDrawing();
+    ClearBackground(DARKGRAY);
 
-        rlImGuiBegin();
+    rlImGuiBegin();
 
-        exitRequested = DrawMenuBar();
+    exitRequested = DrawMenuBar();
 
-        ImGui::SetNextWindowPos(ImVec2(0.0f, 20.0f));
-        ImGui::SetNextWindowSize(
-            ImVec2(
-                static_cast<float>(GetScreenWidth()),
-                static_cast<float>(GetScreenHeight() - 20)
-            )
-        );
+    ImGui::SetNextWindowPos(ImVec2(0.0f, 20.0f));
+    ImGui::SetNextWindowSize(
+        ImVec2(static_cast<float>(GetScreenWidth()),
+               static_cast<float>(GetScreenHeight() - 20)));
 
-        ImGui::Begin(
-            "Editor",
-            nullptr,
-            ImGuiWindowFlags_NoTitleBar |
-            ImGuiWindowFlags_NoCollapse |
-            ImGuiWindowFlags_NoResize |
-            ImGuiWindowFlags_NoMove
-        );
+    ImGui::Begin("Editor", nullptr,
+                 ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse |
+                     ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
 
-		const ImVec2 availableSize = ImGui::GetContentRegionAvail();
+    const ImVec2 availableSize = ImGui::GetContentRegionAvail();
 
-		constexpr float hierarchyWidth = 320.0f;
-		constexpr float inspectorWidth = 300.0f;
-		constexpr float spacing = 8.0f;
+    constexpr float hierarchyWidth = 320.0f;
+    constexpr float inspectorWidth = 300.0f;
+    constexpr float spacing = 8.0f;
 
-		const float mapWidth =
-			availableSize.x -
-			hierarchyWidth -
-			inspectorWidth -
-			spacing * 2.0f;
+    const float mapWidth =
+        availableSize.x - hierarchyWidth - inspectorWidth - spacing * 2.0f;
 
-		const float panelHeight = availableSize.y;
+    const float panelHeight = availableSize.y;
 
-		DrawHierarchyPanel(
-			hierarchyWidth,
-			panelHeight
-		);
+    DrawHierarchyPanel(hierarchyWidth, panelHeight);
 
-		ImGui::SameLine(0.0f, spacing);
+    ImGui::SameLine(0.0f, spacing);
 
-		DrawMapView(
-			mapWidth,
-			panelHeight
-		);
+    DrawMapView(mapWidth, panelHeight);
 
-		ImGui::SameLine(0.0f, spacing);
+    ImGui::SameLine(0.0f, spacing);
 
-		DrawInspectorPanel(
-			inspectorWidth,
-			panelHeight
-		);
+    DrawInspectorPanel(inspectorWidth, panelHeight);
 
-        ImGui::End();
+    ImGui::End();
 
-        rlImGuiEnd();
+    rlImGuiEnd();
 
-        EndDrawing();
-    }
+    EndDrawing();
+  }
 
-    rlImGuiShutdown();
-    CloseWindow();
+  rlImGuiShutdown();
+  CloseWindow();
 
-    return 0;
+  return 0;
 }
