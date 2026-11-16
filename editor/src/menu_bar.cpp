@@ -2,56 +2,49 @@
 
 #include "imgui.h"
 
-bool DrawMenuBar()
-{
-    bool exitRequested = false;
+bool DrawMenuBar() {
+  bool exitRequested = false;
 
-    if (!ImGui::BeginMainMenuBar())
-    {
-        return false;
+  if (!ImGui::BeginMainMenuBar()) {
+    return false;
+  }
+
+  if (ImGui::BeginMenu("File")) {
+    ImGui::MenuItem("New");
+    ImGui::MenuItem("Open", "Ctrl+O");
+    ImGui::MenuItem("Save", "Ctrl+S");
+
+    ImGui::Separator();
+
+    if (ImGui::MenuItem("Exit")) {
+      exitRequested = true;
     }
 
-    if (ImGui::BeginMenu("File"))
-    {
-        ImGui::MenuItem("New");
-        ImGui::MenuItem("Open", "Ctrl+O");
-        ImGui::MenuItem("Save", "Ctrl+S");
+    ImGui::EndMenu();
+  }
 
-        ImGui::Separator();
+  if (ImGui::BeginMenu("Edit")) {
+    ImGui::MenuItem("Undo", "Ctrl+Z", false, false);
+    ImGui::MenuItem("Redo", "Ctrl+Y", false, false);
 
-        if (ImGui::MenuItem("Exit"))
-        {
-            exitRequested = true;
-        }
+    ImGui::EndMenu();
+  }
 
-        ImGui::EndMenu();
-    }
+  if (ImGui::BeginMenu("View")) {
+    ImGui::MenuItem("Project");
+    ImGui::MenuItem("Inspector");
+    ImGui::MenuItem("Grid");
 
-    if (ImGui::BeginMenu("Edit"))
-    {
-        ImGui::MenuItem("Undo", "Ctrl+Z", false, false);
-        ImGui::MenuItem("Redo", "Ctrl+Y", false, false);
+    ImGui::EndMenu();
+  }
 
-        ImGui::EndMenu();
-    }
+  if (ImGui::BeginMenu("Help")) {
+    ImGui::MenuItem("About");
 
-    if (ImGui::BeginMenu("View"))
-    {
-        ImGui::MenuItem("Project");
-        ImGui::MenuItem("Inspector");
-        ImGui::MenuItem("Grid");
+    ImGui::EndMenu();
+  }
 
-        ImGui::EndMenu();
-    }
+  ImGui::EndMainMenuBar();
 
-    if (ImGui::BeginMenu("Help"))
-    {
-        ImGui::MenuItem("About");
-
-        ImGui::EndMenu();
-    }
-
-    ImGui::EndMainMenuBar();
-
-    return exitRequested;
+  return exitRequested;
 }
