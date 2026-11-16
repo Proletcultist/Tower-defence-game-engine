@@ -30,7 +30,7 @@ int main() {
 
     rlImGuiBegin();
 
-    exitRequested = DrawMenuBar();
+    exitRequested = menu::DrawMenuBar();
 
     ImGui::SetNextWindowPos(ImVec2(0.0f, 20.0f));
     ImGui::SetNextWindowSize(
@@ -52,15 +52,15 @@ int main() {
 
     const float panelHeight = availableSize.y;
 
-    DrawHierarchyPanel(hierarchyWidth, panelHeight);
+    hierarchy::DrawHierarchyPanel(hierarchyWidth, panelHeight);
 
     ImGui::SameLine(0.0f, spacing);
 
-    DrawMapView(mapWidth, panelHeight);
+    map_view::DrawMapView(mapWidth, panelHeight);
 
     ImGui::SameLine(0.0f, spacing);
 
-    DrawInspectorPanel(inspectorWidth, panelHeight);
+    inspector::DrawInspectorPanel(inspectorWidth, panelHeight);
 
     ImGui::End();
 
