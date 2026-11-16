@@ -2,10 +2,10 @@
 #include "imgui.h"
 #include "rlImGui.h"
 
-#include "menu_bar.h"
-#include "hierarchy_panel.h"
-#include "map_view.h"
-#include "inspector_panel.h"
+#include "editor/menu_bar.h"
+#include "editor/hierarchy_panel.h"
+#include "editor/map_view.h"
+#include "editor/inspector_panel.h"
 
 int main()
 {
