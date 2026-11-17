@@ -24,3 +24,4 @@ CPMAddPackage(
 )
 
 add_subdirectory(editor)
+add_subdirectory(engine)
