@@ -9,7 +9,7 @@ target_sources(tdg-engine
         src/main.cpp
 )
 
-target_include_directories(tgd-engine
+target_include_directories(tdg-engine
     PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
