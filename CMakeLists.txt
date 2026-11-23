@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.15)
 project(tower-defence-game-engine CXX)
 
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 23)
 # Fail during configuration if compiler doesn't support required c++ standard
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
@@ -22,6 +22,9 @@ CPMAddPackage(
     URI "https://github.com/raylib-extras/rlImGui.git#Raylib_6_0"
     PATCHES "patches/rlimgui-Add-CMakeLists.txt.patch"
 )
+
+# We need a bsoncxx library from this
+CPMAddPackage("https://github.com/mongodb/mongo-cxx-driver.git#r4.6.2")
 
 add_subdirectory(editor)
 add_subdirectory(engine)
