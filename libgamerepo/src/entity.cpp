@@ -54,9 +54,35 @@ getBsonValueAsString(bsoncxx::types::bson_value::view val) {
     }
 }
 
-static EntityDeserializationError
-addFieldNameContext(std::string name, EntityDeserializationError err) {
-    return FieldDeserializationError(name, std::move(err));
+static std::expected<bsoncxx::array::view, EntityDeserializationError>
+getBsonValueAsBsonArray(bsoncxx::types::bson_value::view val) {
+    if (val.type() != bsoncxx::type::k_array) {
+        return std::unexpected(WrongBsonValueType(bsoncxx::type::k_array));
+    } else {
+        return val.get_array();
+    }
+}
+
+template <class T, class F> static auto foldBsonArrayToVector(F deserializer) {
+    return [deserializer](bsoncxx::array::view arr)
+               -> std::expected<std::vector<T>, EntityDeserializationError> {
+        std::vector<T> ret;
+        for (bsoncxx::array::element el : arr) {
+            auto expected_val = deserializer(el.get_value());
+            if (!expected_val) {
+                return std::unexpected(std::move(expected_val).error());
+            }
+            ret.push_back(*expected_val);
+        }
+        return ret;
+    };
+}
+
+static auto addFieldNameContext(std::string name) {
+    return
+        [name](EntityDeserializationError err) -> EntityDeserializationError {
+            return FieldDeserializationError(name, std::move(err));
+        };
 }
 
 bsoncxx::document::value Entity::toBson() const {
@@ -100,48 +126,98 @@ bsoncxx::document::value PoisoningEffect::toBson() const {
         kvp("damage", damage), kvp("duration", duration), kvp("rate", rate));
 }
 
-std::expected<PoisoningEffect, EntityDeserializationError>
-PoisoningEffect::fromBson(bsoncxx::document::view bson) {
-    auto expected_id =
-        getBsonFieldValue(bson, "id")
-            .and_then(getBsonValueAsU32)
-            .transform_error(std::bind_front(addFieldNameContext, "id"));
+std::expected<Entity, EntityDeserializationError>
+Entity::fromBson(bsoncxx::document::view bson) {
+    auto expected_id = getBsonFieldValue(bson, "id")
+                           .and_then(getBsonValueAsU32)
+                           .transform_error(addFieldNameContext("id"));
     if (!expected_id) {
         return std::unexpected(std::move(expected_id).error());
     }
     uint32_t id = *expected_id;
 
-    auto expected_type =
-        getBsonFieldValue(bson, "type")
-            .and_then(getBsonValueAsEntityType)
-            .transform_error(std::bind_front(addFieldNameContext, "type"));
+    auto expected_type = getBsonFieldValue(bson, "type")
+                             .and_then(getBsonValueAsEntityType)
+                             .transform_error(addFieldNameContext("type"));
     if (!expected_type) {
         return std::unexpected(std::move(expected_type).error());
     }
     EntityType type = *expected_type;
 
     auto expected_name = getBsonFieldValue(bson, "name")
-                            .and_then(getBsonValueAsString)
-                            .transform_error(std::bind_front(addFieldNameContext, "name"));
+                             .and_then(getBsonValueAsString)
+                             .transform_error(addFieldNameContext("name"));
     if (!expected_name) {
         return std::unexpected(std::move(expected_name).error());
     }
     std::string name = *expected_name;
 
-    /*
-    std::vector<uint32_t> includers;
-    auto expected_includers = getBsonFieldValue(bson, "includers",
-    bsoncxx::type::k_array); if (!expected_includers) { return
-    std::unexpected(expected_includers.error());
+    auto expected_includers =
+        getBsonFieldValue(bson, "includers")
+            .and_then(getBsonValueAsBsonArray)
+            .and_then(foldBsonArrayToVector<uint32_t>(getBsonValueAsU32))
+            .transform_error(addFieldNameContext("name"));
+    if (!expected_includers) {
+        return std::unexpected(std::move(expected_includers).error());
     }
-    for (bsoncxx::document::element el :
-    expected_includers.value().get_array().view()) { if (el.type() != bsoncxx
-        includers.append();
+    std::vector<uint32_t> includers = *expected_includers;
+
+    auto expected_backlinks =
+        getBsonFieldValue(bson, "backlinks")
+            .and_then(getBsonValueAsBsonArray)
+            .and_then(foldBsonArrayToVector<uint32_t>(getBsonValueAsU32))
+            .transform_error(addFieldNameContext("backlinks"));
+    if (!expected_backlinks) {
+        return std::unexpected(std::move(expected_backlinks).error());
+    }
+    std::vector<uint32_t> backlinks = *expected_backlinks;
+
+    return Entity(id, type, name, includers, backlinks);
+}
+
+std::expected<PoisoningEffect, EntityDeserializationError>
+PoisoningEffect::fromBson(bsoncxx::document::view bson) {
+    auto expected_base = Entity::fromBson(bson);
+    if (!expected_base) {
+        return std::unexpected(std::move(expected_base).error());
+    }
+    Entity base = *expected_base;
+
+    if (base.getType() != EntityType::Value::PoisoningEffect) {
+        return std::unexpected(WrongEntityType(EntityType::Value::PoisoningEffect));
     }
 
-    std::vector<uint32_t> backlinks;
-    uint32_t damage;
-    uint32_t duration;
-    uint32_t rate;
-    */
+    auto expected_damage = getBsonFieldValue(bson, "damage")
+                           .and_then(getBsonValueAsU32)
+                           .transform_error(addFieldNameContext("damage"));
+    if (!expected_damage) {
+        return std::unexpected(std::move(expected_damage).error());
+    }
+    uint32_t damage = *expected_damage;
+
+    auto expected_duration = getBsonFieldValue(bson, "duration")
+                           .and_then(getBsonValueAsU32)
+                           .transform_error(addFieldNameContext("duration"));
+    if (!expected_duration) {
+        return std::unexpected(std::move(expected_duration).error());
+    }
+    uint32_t duration = *expected_duration;
+
+    auto expected_rate = getBsonFieldValue(bson, "rate")
+                           .and_then(getBsonValueAsU32)
+                           .transform_error(addFieldNameContext("rate"));
+    if (!expected_rate) {
+        return std::unexpected(std::move(expected_rate).error());
+    }
+    uint32_t rate = *expected_rate;
+
+    return PoisoningEffect(
+        base.getId(),
+        base.getName(),
+        base.getIncluders(),
+        base.getBacklinks(),
+        damage,
+        duration,
+        rate
+    );
 }

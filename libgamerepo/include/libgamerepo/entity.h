@@ -8,7 +8,6 @@
 
 #include "bsoncxx/document/value.hpp"
 #include "bsoncxx/document/view.hpp"
-#include "libgamerepo/error.h"
 
 class GameRepository;
 
@@ -38,6 +37,8 @@ class EntityType {
     const Value value;
 };
 
+#include "libgamerepo/error.h"
+
 class Entity {
     friend class GameRepository;
 
@@ -53,6 +54,8 @@ class Entity {
            std::vector<uint32_t> includers, std::vector<uint32_t> backlinks)
         : id(id), type(type), name(name), includers(includers),
           backlinks(backlinks) {}
+    static std::expected<Entity, EntityDeserializationError>
+    fromBson(bsoncxx::document::view bson);
     virtual bsoncxx::document::value toBson() const;
 
   public:
@@ -61,6 +64,8 @@ class Entity {
     const std::string &getName() const { return name; }
     const std::vector<uint32_t> &getIncluders() const { return includers; }
     const std::vector<uint32_t> &getBacklinks() const { return backlinks; }
+
+    virtual ~Entity() = default;
 };
 
 class PoisoningEffect : Entity {

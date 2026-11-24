@@ -4,13 +4,15 @@
 #include <variant>
 
 #include "bsoncxx/types.hpp"
+#include "libgamerepo/entity.h"
 
 class MissingField;
 class WrongBsonValueType;
 class WrongEntityTypeValue;
 class FieldDeserializationError;
+class WrongEntityType;
 typedef std::variant<MissingField, WrongBsonValueType, WrongEntityTypeValue,
-                     FieldDeserializationError>
+                     FieldDeserializationError, WrongEntityType>
     EntityDeserializationError;
 
 class MissingField {};
@@ -27,6 +29,17 @@ class WrongBsonValueType {
 };
 
 class WrongEntityTypeValue {};
+
+class WrongEntityType {
+  private:
+    const EntityType expected_type;
+
+  public:
+    WrongEntityType(EntityType expected_type)
+        : expected_type(expected_type) {}
+
+    const EntityType &getExpectedType() const { return expected_type; }
+};
 
 class FieldDeserializationError {
   private:
