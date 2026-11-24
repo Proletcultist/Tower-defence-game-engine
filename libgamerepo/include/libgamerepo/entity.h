@@ -52,8 +52,8 @@ class Entity {
   protected:
     Entity(uint32_t id, EntityType type, std::string name,
            std::vector<uint32_t> includers, std::vector<uint32_t> backlinks)
-        : id(id), type(type), name(name), includers(includers),
-          backlinks(backlinks) {}
+        : id(id), type(type), name(std::move(name)), includers(std::move(includers)),
+          backlinks(std::move(backlinks)) {}
     static std::expected<Entity, EntityDeserializationError>
     fromBson(bsoncxx::document::view bson);
     virtual bsoncxx::document::value toBson() const;

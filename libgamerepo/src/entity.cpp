@@ -213,9 +213,9 @@ PoisoningEffect::fromBson(bsoncxx::document::view bson) {
 
     return PoisoningEffect(
         base.getId(),
-        base.getName(),
-        base.getIncluders(),
-        base.getBacklinks(),
+        std::move(base.getName()),
+        std::move(base.getIncluders()),
+        std::move(base.getBacklinks()),
         damage,
         duration,
         rate
