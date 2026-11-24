@@ -54,107 +54,54 @@ bool DrawMenuBar(Theme &currentTheme) {
     ImGui::EndMenu();
   }
 
-constexpr float themeButtonWidth = 36.0f;
-constexpr float themeButtonPadding = 8.0f;
+  constexpr float themeButtonWidth = 36.0f;
+  constexpr float themeButtonPadding = 8.0f;
 
-ImGui::SameLine(
-    ImGui::GetWindowWidth() -
-    themeButtonWidth -
-    themeButtonPadding
-);
+  ImGui::SameLine(ImGui::GetWindowWidth() - themeButtonWidth -
+                  themeButtonPadding);
 
-ImGui::InvisibleButton(
-    "ThemeToggle",
-    ImVec2(themeButtonWidth, 20.0f)
-);
+  ImGui::InvisibleButton("ThemeToggle", ImVec2(themeButtonWidth, 20.0f));
 
-const bool themeChanged =
-    ImGui::IsItemClicked();
+  const bool themeChanged = ImGui::IsItemClicked();
 
-ImDrawList* drawList =
-    ImGui::GetWindowDrawList();
+  ImDrawList *drawList = ImGui::GetWindowDrawList();
 
-const ImVec2 buttonMin =
-    ImGui::GetItemRectMin();
+  const ImVec2 buttonMin = ImGui::GetItemRectMin();
 
-const ImVec2 iconCenter(
-    buttonMin.x + themeButtonWidth * 0.5f,
-    buttonMin.y + 10.0f
-);
+  const ImVec2 iconCenter(buttonMin.x + themeButtonWidth * 0.5f,
+                          buttonMin.y + 10.0f);
 
-const ImU32 iconColor =
-    ImGui::GetColorU32(ImGuiCol_Text);
+  const ImU32 iconColor = ImGui::GetColorU32(ImGuiCol_Text);
 
-if (currentTheme == Theme::Light)
-{
-    drawList->AddCircleFilled(
-        iconCenter,
-        7.0f,
-        iconColor,
-        32
-    );
+  if (currentTheme == Theme::Light) {
+    drawList->AddCircleFilled(iconCenter, 7.0f, iconColor, 32);
 
-    drawList->AddCircleFilled(
-        ImVec2(
-            iconCenter.x + 4.0f,
-            iconCenter.y - 2.0f
-        ),
-        7.0f,
-        ImGui::GetColorU32(ImGuiCol_MenuBarBg)
-    );
-}
-else
-{
-    drawList->AddCircleFilled(
-        iconCenter,
-        4.0f,
-        iconColor,
-        32
-    );
+    drawList->AddCircleFilled(ImVec2(iconCenter.x + 4.0f, iconCenter.y - 2.0f),
+                              7.0f, ImGui::GetColorU32(ImGuiCol_MenuBarBg));
+  } else {
+    drawList->AddCircleFilled(iconCenter, 4.0f, iconColor, 32);
 
-    for (int i = 0; i < 8; ++i)
-    {
-        const float angle =
-            static_cast<float>(i) *
-            3.14159265f / 4.0f;
+    for (int i = 0; i < 8; ++i) {
+      const float angle = static_cast<float>(i) * 3.14159265f / 4.0f;
 
-        drawList->AddLine(
-            ImVec2(
-                iconCenter.x +
-                    cosf(angle) * 7.0f,
-                iconCenter.y +
-                    sinf(angle) * 7.0f
-            ),
-            ImVec2(
-                iconCenter.x +
-                    cosf(angle) * 9.0f,
-                iconCenter.y +
-                    sinf(angle) * 9.0f
-            ),
-            iconColor,
-            1.2f
-        );
+      drawList->AddLine(ImVec2(iconCenter.x + cosf(angle) * 7.0f,
+                               iconCenter.y + sinf(angle) * 7.0f),
+                        ImVec2(iconCenter.x + cosf(angle) * 9.0f,
+                               iconCenter.y + sinf(angle) * 9.0f),
+                        iconColor, 1.2f);
     }
-}
+  }
 
-if (ImGui::IsItemHovered())
-{
-    ImGui::SetTooltip(
-        currentTheme == Theme::Light
-            ? "Switch to dark theme"
-            : "Switch to light theme"
-    );
-}
+  if (ImGui::IsItemHovered()) {
+    ImGui::SetTooltip(currentTheme == Theme::Light ? "Switch to dark theme"
+                                                   : "Switch to light theme");
+  }
 
-if (themeChanged)
-{
-    currentTheme =
-        currentTheme == Theme::Light
-            ? Theme::Dark
-            : Theme::Light;
+  if (themeChanged) {
+    currentTheme = currentTheme == Theme::Light ? Theme::Dark : Theme::Light;
 
     ApplyTheme(currentTheme);
-}
+  }
 
   ImGui::EndMainMenuBar();
 
