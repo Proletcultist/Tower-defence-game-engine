@@ -6,6 +6,10 @@
 #include <stdexcept>
 #include <sys/wait.h>
 
+namespace project_folder {
+
+constexpr char projectFileName[] = "project.tdg";
+
 std::string SelectProjectFolder() {
   FILE *dialog = popen(
       "zenity --file-selection --directory --title='Open Folder'", "r");
@@ -30,12 +34,16 @@ std::string SelectProjectFolder() {
     folder.pop_back();
   }
   if (folder.empty()) {
-    return {};
+    throw std::runtime_error("Zenity returned an empty folder path.");
   }
 
-  const auto projectFile = std::filesystem::path(folder) / "project.tdg";
+  const auto projectFile = std::filesystem::path(folder) / projectFileName;
   std::error_code error;
-  if (!std::filesystem::is_regular_file(projectFile, error)) {
+  const bool isRegularFile = std::filesystem::is_regular_file(projectFile, error);
+  if (error) {
+    throw std::runtime_error("Could not check project file: " + error.message());
+  }
+  if (!isRegularFile) {
     throw std::runtime_error("Selected folder must contain a project.tdg file.");
   }
   if (!std::ifstream(projectFile, std::ios::binary)) {
@@ -43,3 +51,5 @@ std::string SelectProjectFolder() {
   }
   return folder;
 }
+
+} // namespace project_folder

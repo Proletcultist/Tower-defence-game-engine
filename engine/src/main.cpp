@@ -19,7 +19,11 @@ int main() {
   std::string message;
   bool hasError = false;
 
-  while (!WindowShouldClose()) {
+  while (true) {
+    if (WindowShouldClose() && !folderDialog.valid()) {
+      break;
+    }
+
     if (folderDialog.valid() &&
         folderDialog.wait_for(std::chrono::seconds(0)) ==
             std::future_status::ready) {
@@ -44,15 +48,17 @@ int main() {
         IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
       message.clear();
       hasError = false;
-      folderDialog = std::async(std::launch::async, SelectProjectFolder);
+      folderDialog =
+          std::async(std::launch::async, project_folder::SelectProjectFolder);
     }
 
     BeginDrawing();
     ClearBackground(RAYWHITE);
     DrawRectangleRec(openButton,
                      !folderDialog.valid() && hovered ? SKYBLUE : LIGHTGRAY);
-    DrawText(folderDialog.valid() ? "Choosing folder..." : "Open Folder", 32,
-             33, 20, DARKGRAY);
+    DrawText(folderDialog.valid() ? "Choosing folder..." : "Open Folder",
+             static_cast<int>(openButton.x) + 12,
+             static_cast<int>(openButton.y) + 13, 20, DARKGRAY);
     DrawText(message.c_str(), 20, 120, 20, hasError ? RED : DARKGRAY);
     EndDrawing();
   }
