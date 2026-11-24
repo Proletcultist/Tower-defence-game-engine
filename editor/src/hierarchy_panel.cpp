@@ -1,85 +1,91 @@
 #include "editor/hierarchy_panel.h"
-
 #include "editor/entity_creation_popup.h"
 
 #include "imgui.h"
 
 namespace hierarchy {
-void DrawProjectDefinitions() {
+void DrawProjectDefinitions(HierarchyViewModel &viewModel) {
   if (!ImGui::CollapsingHeader("PROJECT DEFINITIONS",
                                ImGuiTreeNodeFlags_DefaultOpen)) {
     return;
   }
 
-  if (ImGui::TreeNodeEx("Enemies", ImGuiTreeNodeFlags_DefaultOpen)) {
-    ImGui::TreeNodeEx("Enemy_Boss", ImGuiTreeNodeFlags_Leaf |
-                                        ImGuiTreeNodeFlags_NoTreePushOnOpen);
+  const auto drawCategory =
+      [&viewModel](const char *categoryName,
+                   entity_creation_popup::EntityType type) {
+        const std::vector<HierarchyItem> *items = viewModel.FindItems(type);
 
-    ImGui::TreeNodeEx("Enemy_Basic", ImGuiTreeNodeFlags_Leaf |
-                                         ImGuiTreeNodeFlags_NoTreePushOnOpen);
+        if (items == nullptr || items->empty()) {
+          return;
+        }
 
-    ImGui::TreePop();
-  }
+        if (ImGui::TreeNodeEx(categoryName)) {
+          for (const HierarchyItem &item : *items) {
+            ImGui::TreeNodeEx(item.name.c_str(),
+                              ImGuiTreeNodeFlags_Leaf |
+                                  ImGuiTreeNodeFlags_NoTreePushOnOpen);
+          }
 
-  if (ImGui::TreeNodeEx("Towers", ImGuiTreeNodeFlags_DefaultOpen)) {
-    ImGui::TreeNodeEx("Tower_Archer", ImGuiTreeNodeFlags_Leaf |
-                                          ImGuiTreeNodeFlags_NoTreePushOnOpen);
+          ImGui::TreePop();
+        }
+      };
 
-    ImGui::TreeNodeEx("Tower_Canon", ImGuiTreeNodeFlags_Leaf |
-                                         ImGuiTreeNodeFlags_NoTreePushOnOpen);
+  drawCategory("Game Map Backgrounds",
+               entity_creation_popup::EntityType::GameMapBackground);
 
-    ImGui::TreePop();
-  }
+  drawCategory("Game Maps", entity_creation_popup::EntityType::GameMap);
 
-  if (ImGui::TreeNodeEx("Abilities")) {
-    ImGui::TreeNodeEx("Ability_Fireball",
-                      ImGuiTreeNodeFlags_Leaf |
-                          ImGuiTreeNodeFlags_NoTreePushOnOpen);
+  drawCategory("Textures", entity_creation_popup::EntityType::Texture);
 
-    ImGui::TreePop();
-  }
+  drawCategory("Enemies", entity_creation_popup::EntityType::EnemyType);
 
-  if (ImGui::TreeNodeEx("Effects")) {
-    ImGui::TreeNodeEx("Effect_Poison", ImGuiTreeNodeFlags_Leaf |
-                                           ImGuiTreeNodeFlags_NoTreePushOnOpen);
+  drawCategory("Towers", entity_creation_popup::EntityType::TowerType);
 
-    ImGui::TreePop();
-  }
+  drawCategory("Damage Types", entity_creation_popup::EntityType::DamageType);
+
+  drawCategory("Abilities", entity_creation_popup::EntityType::Ability);
+
+  drawCategory("Effects", entity_creation_popup::EntityType::Effect);
 }
 
-void DrawLevelEntities() {
+void DrawLevelEntities(HierarchyViewModel &viewModel) {
   if (!ImGui::CollapsingHeader("LEVEL ENTITIES",
                                ImGuiTreeNodeFlags_DefaultOpen)) {
     return;
   }
 
-  if (ImGui::TreeNodeEx("GameLevel_1", ImGuiTreeNodeFlags_DefaultOpen)) {
-    ImGui::TreeNodeEx("GameMap", ImGuiTreeNodeFlags_Leaf |
-                                     ImGuiTreeNodeFlags_NoTreePushOnOpen);
+  const auto drawCategory =
+      [&viewModel](const char *categoryName,
+                   entity_creation_popup::EntityType type) {
+        const std::vector<HierarchyItem> *items = viewModel.FindItems(type);
 
-    ImGui::TreeNodeEx("EnemyPath_1", ImGuiTreeNodeFlags_Leaf |
-                                         ImGuiTreeNodeFlags_NoTreePushOnOpen);
+        if (items == nullptr || items->empty()) {
+          return;
+        }
 
-    ImGui::TreeNodeEx("TowerSpot_1", ImGuiTreeNodeFlags_Leaf |
-                                         ImGuiTreeNodeFlags_NoTreePushOnOpen);
+        if (ImGui::TreeNodeEx(categoryName)) {
+          for (const HierarchyItem &item : *items) {
+            ImGui::TreeNodeEx(item.name.c_str(),
+                              ImGuiTreeNodeFlags_Leaf |
+                                  ImGuiTreeNodeFlags_NoTreePushOnOpen);
+          }
 
-    if (ImGui::TreeNodeEx("EnemyWave_1")) {
-      ImGui::TreeNodeEx("EnemyType_Basic",
-                        ImGuiTreeNodeFlags_Leaf |
-                            ImGuiTreeNodeFlags_NoTreePushOnOpen);
+          ImGui::TreePop();
+        }
+      };
 
-      ImGui::TreeNodeEx("EnemyType_Boss",
-                        ImGuiTreeNodeFlags_Leaf |
-                            ImGuiTreeNodeFlags_NoTreePushOnOpen);
+  drawCategory("Enemy Waves", entity_creation_popup::EntityType::EnemyWave);
 
-      ImGui::TreePop();
-    }
+  drawCategory("Enemy Waves On Paths",
+               entity_creation_popup::EntityType::EnemyWaveOnPath);
 
-    ImGui::TreePop();
-  }
+  drawCategory("Enemy Paths", entity_creation_popup::EntityType::EnemyPath);
+
+  drawCategory("Tower Spots", entity_creation_popup::EntityType::TowerSpot);
 }
 
-void DrawHierarchyPanel(float width, float height) {
+void DrawHierarchyPanel(float width, float height,
+                        HierarchyViewModel &viewModel) {
   ImGui::BeginChild("HierarchyPanel", ImVec2(width, height), true);
 
   ImGui::TextUnformatted("HIERARCHY");
@@ -99,15 +105,16 @@ void DrawHierarchyPanel(float width, float height) {
 
   ImGui::Separator();
 
-  DrawProjectDefinitions();
-  ImGui::Spacing();
-  DrawLevelEntities();
-
   const entity_creation_popup::EntityType selectedType =
       entity_creation_popup::DrawPopup();
 
   if (selectedType != entity_creation_popup::EntityType::None) {
+    viewModel.Add(selectedType);
   }
+
+  DrawProjectDefinitions(viewModel);
+  ImGui::Spacing();
+  DrawLevelEntities(viewModel);
 
   ImGui::EndChild();
 }

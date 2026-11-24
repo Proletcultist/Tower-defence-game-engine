@@ -14,12 +14,14 @@ target_sources(tdg-editor
         src/map_view.cpp
         src/inspector_panel.cpp
         src/entity_creation_popup.cpp
+        src/hierarchy_view_model.cpp
 
         include/editor/menu_bar.h
         include/editor/hierarchy_panel.h
         include/editor/map_view.h
         include/editor/inspector_panel.h
         include/editor/entity_creation_popup.h
+        include/editor/hierarchy_view_model.h
 )
 
 target_include_directories(tdg-editor

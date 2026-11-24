@@ -3,6 +3,7 @@
 #include "rlImGui.h"
 
 #include "editor/hierarchy_panel.h"
+#include "editor/hierarchy_view_model.h"
 #include "editor/inspector_panel.h"
 #include "editor/map_view.h"
 #include "editor/menu_bar.h"
@@ -26,6 +27,8 @@ int main() {
 
   menu::Theme currentTheme = menu::Theme::Dark;
   menu::ApplyTheme(currentTheme);
+
+  hierarchy::HierarchyViewModel hierarchyViewModel;
 
   while (!WindowShouldClose() && !exitRequested) {
     BeginDrawing();
@@ -55,7 +58,8 @@ int main() {
 
     const float panelHeight = availableSize.y;
 
-    hierarchy::DrawHierarchyPanel(hierarchyWidth, panelHeight);
+    hierarchy::DrawHierarchyPanel(hierarchyWidth, panelHeight,
+                                  hierarchyViewModel);
 
     ImGui::SameLine(0.0f, spacing);
 
