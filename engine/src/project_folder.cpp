@@ -24,11 +24,19 @@ std::string SelectProjectFolder() {
   }
 
   const int status = pclose(dialog);
-  if (status != -1 && WIFEXITED(status) && WEXITSTATUS(status) == 1) {
+  switch (status != -1 && WIFEXITED(status) ? WEXITSTATUS(status) : -1) {
+  case 0:
+    break;
+  case 1:
     return {};
-  }
-  if (status != 0) {
-    throw std::runtime_error("Could not open folder dialog (Zenity).");
+  case -1:
+    throw std::runtime_error("Could not wait for Zenity.");
+  case 5:
+    throw std::runtime_error("Zenity dialog timed out.");
+  case 127:
+    throw std::runtime_error("Zenity is not installed.");
+  default:
+    throw std::runtime_error("Zenity failed.");
   }
   if (!folder.empty() && folder.back() == '\n') {
     folder.pop_back();
