@@ -5,4 +5,4 @@
 namespace hierarchy {
 void DrawHierarchyPanel(float width, float height,
                         HierarchyViewModel &viewModel);
-} // namespace hierarchy
+}//namespace hierarchy
