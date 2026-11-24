@@ -24,13 +24,16 @@ int main() {
 
   bool exitRequested = false;
 
+  menu::Theme currentTheme = menu::Theme::Dark;
+  menu::ApplyTheme(currentTheme);
+
   while (!WindowShouldClose() && !exitRequested) {
     BeginDrawing();
     ClearBackground(DARKGRAY);
 
     rlImGuiBegin();
 
-    exitRequested = menu::DrawMenuBar();
+    exitRequested = menu::DrawMenuBar(currentTheme);
 
     ImGui::SetNextWindowPos(ImVec2(0.0f, 20.0f));
     ImGui::SetNextWindowSize(
