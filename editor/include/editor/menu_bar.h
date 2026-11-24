@@ -1,5 +1,9 @@
 #pragma once
 
 namespace menu {
-bool DrawMenuBar();
-}
+enum class Theme { Dark, Light };
+
+void ApplyTheme(Theme theme);
+
+bool DrawMenuBar(Theme &currentTheme);
+} // namespace menu
