@@ -7,6 +7,9 @@ target_link_libraries(tdg-engine
 target_sources(tdg-engine
     PRIVATE
         src/main.cpp
+        src/project_folder.cpp
+
+        include/engine/project_folder.h
 )
 
 target_include_directories(tdg-engine

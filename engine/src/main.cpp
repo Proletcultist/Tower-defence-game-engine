@@ -1,72 +1,68 @@
-/*******************************************************************************************
-*
-*   raylib [core] example - basic window
-*
-*   Example complexity rating: [★☆☆☆] 1/4
-*
-*   Welcome to raylib!
-*
-*   To test examples, just press F6 and execute 'raylib_compile_execute' script
-*   Note that compiled executable is placed in the same folder as .c file
-*
-*   To test the examples on Web, press F6 and execute 'raylib_compile_execute_web' script
-*   Web version of the program is generated in the same folder as .c file
-*
-*   You can find all basic examples on C:\raylib\raylib\examples folder or
-*   raylib official webpage: www.raylib.com
-*
-*   Enjoy using raylib. :)
-*
-*   Example originally created with raylib 1.0, last time updated with raylib 1.0
-*
-*   Example licensed under an unmodified zlib/libpng license, which is an OSI-certified,
-*   BSD-like license that allows static linking with closed source software
-*
-*   Copyright (c) 2013-2026 Ramon Santamaria (@raysan5)
-*
-********************************************************************************************/
+#include <chrono>
+#include <exception>
+#include <future>
+#include <string>
 
+#include "engine/project_folder.h"
 #include "raylib.h"
 
-//------------------------------------------------------------------------------------
-// Program main entry point
-//------------------------------------------------------------------------------------
-int main(void)
-{
-    // Initialization
-    //--------------------------------------------------------------------------------------
-    const int screenWidth = 800;
-    const int screenHeight = 450;
+int main() {
+  InitWindow(800, 450, "Tower Defence Engine");
+  if (!IsWindowReady()) {
+    return 1;
+  }
+  SetTargetFPS(60);
 
-    InitWindow(screenWidth, screenHeight, "raylib [core] example - basic window");
+  const Rectangle openButton{20.0f, 20.0f, 220.0f, 45.0f};
+  std::future<std::string> folderDialog;
+  std::string projectDirectory;
+  std::string message;
+  bool hasError = false;
 
-    SetTargetFPS(60);               // Set our game to run at 60 frames-per-second
-    //--------------------------------------------------------------------------------------
-
-    // Main game loop
-    while (!WindowShouldClose())    // Detect window close button or ESC key
-    {
-        // Update
-        //----------------------------------------------------------------------------------
-        // TODO: Update your variables here
-        //----------------------------------------------------------------------------------
-
-        // Draw
-        //----------------------------------------------------------------------------------
-        BeginDrawing();
-
-            ClearBackground(RAYWHITE);
-
-            DrawText("Congrats! You created your first window!", 190, 200, 20, LIGHTGRAY);
-
-        EndDrawing();
-        //----------------------------------------------------------------------------------
+  while (true) {
+    if (WindowShouldClose() && !folderDialog.valid()) {
+      break;
     }
 
-    // De-Initialization
-    //--------------------------------------------------------------------------------------
-    CloseWindow();        // Close window and OpenGL context
-    //--------------------------------------------------------------------------------------
+    if (folderDialog.valid() &&
+        folderDialog.wait_for(std::chrono::seconds(0)) ==
+            std::future_status::ready) {
+      try {
+        const auto folder = folderDialog.get();
+        if (!folder.empty()) {
+          projectDirectory = folder;
+          const auto title = "Tower Defence Engine - " + projectDirectory;
+          SetWindowTitle(title.c_str());
+          message = "Project opened.";
+        } else {
+          message = "Folder selection cancelled.";
+        }
+      } catch (const std::exception &error) {
+        message = "Error: " + std::string(error.what());
+        hasError = true;
+      }
+    }
 
-    return 0;
+    const bool hovered = CheckCollisionPointRec(GetMousePosition(), openButton);
+    if (!folderDialog.valid() && hovered &&
+        IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
+      message.clear();
+      hasError = false;
+      folderDialog =
+          std::async(std::launch::async, project_folder::SelectProjectFolder);
+    }
+
+    BeginDrawing();
+    ClearBackground(RAYWHITE);
+    DrawRectangleRec(openButton,
+                     !folderDialog.valid() && hovered ? SKYBLUE : LIGHTGRAY);
+    DrawText(folderDialog.valid() ? "Choosing folder..." : "Open Folder",
+             static_cast<int>(openButton.x) + 12,
+             static_cast<int>(openButton.y) + 13, 20, DARKGRAY);
+    DrawText(message.c_str(), 20, 120, 20, hasError ? RED : DARKGRAY);
+    EndDrawing();
+  }
+
+  CloseWindow();
+  return 0;
 }
