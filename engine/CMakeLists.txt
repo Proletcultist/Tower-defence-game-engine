@@ -7,6 +7,8 @@ target_link_libraries(tdg-engine
 target_sources(tdg-engine
     PRIVATE
         src/main.cpp
+        src/game_state.cpp
+        src/engine_state.cpp
 )
 
 target_include_directories(tdg-engine
