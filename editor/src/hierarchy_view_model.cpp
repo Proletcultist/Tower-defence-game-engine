@@ -66,8 +66,7 @@ HierarchyViewModel::FindItems(entity::EntityType type) const {
   return &it->second;
 }
 
-std::string
-HierarchyViewModel::GetDefaultName(entity::EntityType type) {
+std::string HierarchyViewModel::GetDefaultName(entity::EntityType type) {
   switch (type) {
   case entity::EntityType::GameMapBackground:
     return "GameMapBackgrounddefault";

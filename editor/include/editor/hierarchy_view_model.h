@@ -27,12 +27,10 @@ public:
 
   const std::optional<HierarchySelection> &GetSelected() const;
 
-  const std::vector<HierarchyItem> *
-  FindItems(entity::EntityType type) const;
+  const std::vector<HierarchyItem> *FindItems(entity::EntityType type) const;
 
 private:
-  std::map<entity::EntityType, std::vector<HierarchyItem>>
-      items_;
+  std::map<entity::EntityType, std::vector<HierarchyItem>> items_;
 
   std::map<entity::EntityType, std::size_t> nextIndex_;
   std::optional<HierarchySelection> selected_;

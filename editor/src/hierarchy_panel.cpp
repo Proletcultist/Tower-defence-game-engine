@@ -62,23 +62,17 @@ void DrawProjectDefinitions(HierarchyViewModel &viewModel) {
   DrawCategory(viewModel, "Game Map Backgrounds",
                entity::EntityType::GameMapBackground);
 
-  DrawCategory(viewModel, "Game Maps",
-               entity::EntityType::GameMap);
+  DrawCategory(viewModel, "Game Maps", entity::EntityType::GameMap);
 
-  DrawCategory(viewModel, "Textures",
-               entity::EntityType::Texture);
+  DrawCategory(viewModel, "Textures", entity::EntityType::Texture);
 
-  DrawCategory(viewModel, "Enemies",
-               entity::EntityType::EnemyType);
+  DrawCategory(viewModel, "Enemies", entity::EntityType::EnemyType);
 
-  DrawCategory(viewModel, "Towers",
-               entity::EntityType::TowerType);
+  DrawCategory(viewModel, "Towers", entity::EntityType::TowerType);
 
-  DrawCategory(viewModel, "Damage Types",
-               entity::EntityType::DamageType);
+  DrawCategory(viewModel, "Damage Types", entity::EntityType::DamageType);
 
-  DrawCategory(viewModel, "Abilities",
-               entity::EntityType::Ability);
+  DrawCategory(viewModel, "Abilities", entity::EntityType::Ability);
 
   DrawCategory(viewModel, "Effects", entity::EntityType::Effect);
 }
@@ -89,17 +83,14 @@ void DrawLevelEntities(HierarchyViewModel &viewModel) {
     return;
   }
 
-  DrawCategory(viewModel, "Enemy Waves",
-               entity::EntityType::EnemyWave);
+  DrawCategory(viewModel, "Enemy Waves", entity::EntityType::EnemyWave);
 
   DrawCategory(viewModel, "Enemy Waves On Paths",
                entity::EntityType::EnemyWaveOnPath);
 
-  DrawCategory(viewModel, "Enemy Paths",
-               entity::EntityType::EnemyPath);
+  DrawCategory(viewModel, "Enemy Paths", entity::EntityType::EnemyPath);
 
-  DrawCategory(viewModel, "Tower Spots",
-               entity::EntityType::TowerSpot);
+  DrawCategory(viewModel, "Tower Spots", entity::EntityType::TowerSpot);
 }
 } // namespace
 
@@ -124,8 +115,7 @@ void DrawHierarchyPanel(float width, float height,
 
   ImGui::Separator();
 
-  const entity::EntityType newType =
-      entity_creation_popup::DrawPopup();
+  const entity::EntityType newType = entity_creation_popup::DrawPopup();
 
   if (newType != entity::EntityType::None) {
     viewModel.Add(newType);
