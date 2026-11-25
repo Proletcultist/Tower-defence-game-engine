@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <filesystem>
 #include <optional>
+#include <unordered_map>
 
 #include "bsoncxx/document/value.hpp"
 #include "libgamerepo/entity.h"
@@ -24,6 +25,7 @@
 class GameRepository {
   private:
     std::unordered_map<uint32_t, bsoncxx::document::value> buffer;
+    uint32_t next_id;
 
     std::filesystem::path root_path;
 
@@ -31,6 +33,7 @@ class GameRepository {
     static GameRepository open(std::filesystem::path root_path);
     static GameRepository create(std::filesystem::path root_path);
 
+    std::unordered_map<uint32_t, EntityIndexEntry> getIndex();
     Entity readEntity(uint32_t id);
     Entity createEntity();
     void removeEntity(uint32_t id);

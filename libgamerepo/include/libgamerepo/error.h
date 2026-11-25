@@ -9,10 +9,11 @@
 class MissingField;
 class WrongBsonValueType;
 class WrongEntityTypeValue;
+class WrongEntityRelationKindValue;
 class FieldDeserializationError;
 class WrongEntityType;
 typedef std::variant<MissingField, WrongBsonValueType, WrongEntityTypeValue,
-                     FieldDeserializationError, WrongEntityType>
+                     FieldDeserializationError, WrongEntityType, WrongEntityRelationKindValue>
     EntityDeserializationError;
 
 class MissingField {};
@@ -29,6 +30,8 @@ class WrongBsonValueType {
 };
 
 class WrongEntityTypeValue {};
+
+class WrongEntityRelationKindValue {};
 
 class WrongEntityType {
   private:
