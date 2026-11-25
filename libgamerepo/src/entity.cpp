@@ -10,6 +10,7 @@
 #include "bsoncxx/types.hpp"
 #include "bsoncxx/types/bson_value/view.hpp"
 #include "libgamerepo/entity.h"
+#include "libgamerepo/deserialization_error.h"
 
 static std::expected<bsoncxx::types::bson_value::view,
                      EntityDeserializationError>

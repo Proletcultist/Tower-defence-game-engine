@@ -37,7 +37,7 @@ class EntityType {
     const Value value;
 };
 
-#include "libgamerepo/error.h"
+#include "libgamerepo/deserialization_error.h"
 
 class EntityMetadata {
   private:
