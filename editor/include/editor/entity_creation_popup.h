@@ -1,23 +1,10 @@
 #pragma once
 
-namespace entity_creation_popup {
-enum class EntityType {
-  None,
-  GameMapBackground,
-  GameMap,
-  Texture,
-  EnemyType,
-  EnemyWave,
-  EnemyWaveOnPath,
-  EnemyPath,
-  TowerType,
-  TowerSpot,
-  DamageType,
-  Ability,
-  Effect
-};
+#include "entity_type.h"
 
+namespace entity_creation_popup
+{
 void OpenPopup();
 
-EntityType DrawPopup();
-} // namespace entity_creation_popup
+entity::EntityType DrawPopup();
+}

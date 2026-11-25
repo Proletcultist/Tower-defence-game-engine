@@ -10,7 +10,7 @@
 namespace hierarchy {
 namespace {
 void DrawCategory(HierarchyViewModel &viewModel, const char *categoryName,
-                  entity_creation_popup::EntityType type) {
+                  entity::EntityType type) {
   const std::vector<HierarchyItem> *items = viewModel.FindItems(type);
 
   if (items == nullptr || items->empty()) {
@@ -60,27 +60,27 @@ void DrawProjectDefinitions(HierarchyViewModel &viewModel) {
   }
 
   DrawCategory(viewModel, "Game Map Backgrounds",
-               entity_creation_popup::EntityType::GameMapBackground);
+               entity::EntityType::GameMapBackground);
 
   DrawCategory(viewModel, "Game Maps",
-               entity_creation_popup::EntityType::GameMap);
+               entity::EntityType::GameMap);
 
   DrawCategory(viewModel, "Textures",
-               entity_creation_popup::EntityType::Texture);
+               entity::EntityType::Texture);
 
   DrawCategory(viewModel, "Enemies",
-               entity_creation_popup::EntityType::EnemyType);
+               entity::EntityType::EnemyType);
 
   DrawCategory(viewModel, "Towers",
-               entity_creation_popup::EntityType::TowerType);
+               entity::EntityType::TowerType);
 
   DrawCategory(viewModel, "Damage Types",
-               entity_creation_popup::EntityType::DamageType);
+               entity::EntityType::DamageType);
 
   DrawCategory(viewModel, "Abilities",
-               entity_creation_popup::EntityType::Ability);
+               entity::EntityType::Ability);
 
-  DrawCategory(viewModel, "Effects", entity_creation_popup::EntityType::Effect);
+  DrawCategory(viewModel, "Effects", entity::EntityType::Effect);
 }
 
 void DrawLevelEntities(HierarchyViewModel &viewModel) {
@@ -90,16 +90,16 @@ void DrawLevelEntities(HierarchyViewModel &viewModel) {
   }
 
   DrawCategory(viewModel, "Enemy Waves",
-               entity_creation_popup::EntityType::EnemyWave);
+               entity::EntityType::EnemyWave);
 
   DrawCategory(viewModel, "Enemy Waves On Paths",
-               entity_creation_popup::EntityType::EnemyWaveOnPath);
+               entity::EntityType::EnemyWaveOnPath);
 
   DrawCategory(viewModel, "Enemy Paths",
-               entity_creation_popup::EntityType::EnemyPath);
+               entity::EntityType::EnemyPath);
 
   DrawCategory(viewModel, "Tower Spots",
-               entity_creation_popup::EntityType::TowerSpot);
+               entity::EntityType::TowerSpot);
 }
 } // namespace
 
@@ -124,10 +124,10 @@ void DrawHierarchyPanel(float width, float height,
 
   ImGui::Separator();
 
-  const entity_creation_popup::EntityType newType =
+  const entity::EntityType newType =
       entity_creation_popup::DrawPopup();
 
-  if (newType != entity_creation_popup::EntityType::None) {
+  if (newType != entity::EntityType::None) {
     viewModel.Add(newType);
   }
 

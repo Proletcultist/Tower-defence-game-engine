@@ -5,62 +5,62 @@
 namespace entity_creation_popup {
 void OpenPopup() { ImGui::OpenPopup("CreateEntityPopup"); }
 
-EntityType DrawPopup() {
-  EntityType selectedType = EntityType::None;
+entity::EntityType DrawPopup() {
+  entity::EntityType selectedType = entity::EntityType::None;
 
   if (!ImGui::BeginPopup("CreateEntityPopup")) {
     return selectedType;
   }
   if (ImGui::Selectable("GameMapBackground")) {
-    selectedType = EntityType::GameMapBackground;
+    selectedType = entity::EntityType::GameMapBackground;
     ImGui::CloseCurrentPopup();
   }
   if (ImGui::Selectable("GameMap")) {
-    selectedType = EntityType::GameMap;
+    selectedType = entity::EntityType::GameMap;
     ImGui::CloseCurrentPopup();
   }
   if (ImGui::Selectable("Texture")) {
-    selectedType = EntityType::Texture;
+    selectedType = entity::EntityType::Texture;
     ImGui::CloseCurrentPopup();
   }
   if (ImGui::Selectable("EnemyType")) {
-    selectedType = EntityType::EnemyType;
+    selectedType = entity::EntityType::EnemyType;
     ImGui::CloseCurrentPopup();
   }
   if (ImGui::Selectable("EnemyWave")) {
-    selectedType = EntityType::EnemyWave;
+    selectedType = entity::EntityType::EnemyWave;
     ImGui::CloseCurrentPopup();
   }
   if (ImGui::Selectable("EnemyWaveOnPath")) {
-    selectedType = EntityType::EnemyWaveOnPath;
+    selectedType = entity::EntityType::EnemyWaveOnPath;
     ImGui::CloseCurrentPopup();
   }
   if (ImGui::Selectable("EnemyPath")) {
-    selectedType = EntityType::EnemyPath;
+    selectedType = entity::EntityType::EnemyPath;
     ImGui::CloseCurrentPopup();
   }
 
   if (ImGui::Selectable("TowerType")) {
-    selectedType = EntityType::TowerType;
+    selectedType = entity::EntityType::TowerType;
     ImGui::CloseCurrentPopup();
   }
 
   if (ImGui::Selectable("TowerSpot")) {
-    selectedType = EntityType::TowerSpot;
+    selectedType = entity::EntityType::TowerSpot;
     ImGui::CloseCurrentPopup();
   }
 
   if (ImGui::Selectable("DamageType")) {
-    selectedType = EntityType::DamageType;
+    selectedType = entity::EntityType::DamageType;
     ImGui::CloseCurrentPopup();
   }
   if (ImGui::Selectable("Ability")) {
-    selectedType = EntityType::Ability;
+    selectedType = entity::EntityType::Ability;
     ImGui::CloseCurrentPopup();
   }
 
   if (ImGui::Selectable("Effect")) {
-    selectedType = EntityType::Effect;
+    selectedType = entity::EntityType::Effect;
     ImGui::CloseCurrentPopup();
   }
 

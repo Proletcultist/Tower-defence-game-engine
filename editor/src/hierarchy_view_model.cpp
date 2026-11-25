@@ -3,8 +3,8 @@
 #include <algorithm>
 
 namespace hierarchy {
-void HierarchyViewModel::Add(entity_creation_popup::EntityType type) {
-  if (type == entity_creation_popup::EntityType::None) {
+void HierarchyViewModel::Add(entity::EntityType type) {
+  if (type == entity::EntityType::None) {
     return;
   }
 
@@ -14,7 +14,7 @@ void HierarchyViewModel::Add(entity_creation_popup::EntityType type) {
   items_[type].push_back({name});
 }
 
-bool HierarchyViewModel::Remove(entity_creation_popup::EntityType type,
+bool HierarchyViewModel::Remove(entity::EntityType type,
                                 const std::string &name) {
   const auto category = items_.find(type);
 
@@ -45,7 +45,7 @@ bool HierarchyViewModel::Remove(entity_creation_popup::EntityType type,
   return true;
 }
 
-void HierarchyViewModel::Select(entity_creation_popup::EntityType type,
+void HierarchyViewModel::Select(entity::EntityType type,
                                 const std::string &name) {
   selected_ = HierarchySelection{type, name};
 }
@@ -56,7 +56,7 @@ HierarchyViewModel::GetSelected() const {
 }
 
 const std::vector<HierarchyItem> *
-HierarchyViewModel::FindItems(entity_creation_popup::EntityType type) const {
+HierarchyViewModel::FindItems(entity::EntityType type) const {
   const auto it = items_.find(type);
 
   if (it == items_.end()) {
@@ -67,45 +67,45 @@ HierarchyViewModel::FindItems(entity_creation_popup::EntityType type) const {
 }
 
 std::string
-HierarchyViewModel::GetDefaultName(entity_creation_popup::EntityType type) {
+HierarchyViewModel::GetDefaultName(entity::EntityType type) {
   switch (type) {
-  case entity_creation_popup::EntityType::GameMapBackground:
+  case entity::EntityType::GameMapBackground:
     return "GameMapBackgrounddefault";
 
-  case entity_creation_popup::EntityType::GameMap:
+  case entity::EntityType::GameMap:
     return "GameMapdefault";
 
-  case entity_creation_popup::EntityType::Texture:
+  case entity::EntityType::Texture:
     return "Texturedefault";
 
-  case entity_creation_popup::EntityType::EnemyType:
+  case entity::EntityType::EnemyType:
     return "EnemyTypedefault";
 
-  case entity_creation_popup::EntityType::EnemyWave:
+  case entity::EntityType::EnemyWave:
     return "EnemyWavedefault";
 
-  case entity_creation_popup::EntityType::EnemyWaveOnPath:
+  case entity::EntityType::EnemyWaveOnPath:
     return "EnemyWaveOnPathdefault";
 
-  case entity_creation_popup::EntityType::EnemyPath:
+  case entity::EntityType::EnemyPath:
     return "EnemyPathdefault";
 
-  case entity_creation_popup::EntityType::TowerType:
+  case entity::EntityType::TowerType:
     return "TowerTypedefault";
 
-  case entity_creation_popup::EntityType::TowerSpot:
+  case entity::EntityType::TowerSpot:
     return "TowerSpotdefault";
 
-  case entity_creation_popup::EntityType::DamageType:
+  case entity::EntityType::DamageType:
     return "DamageTypedefault";
 
-  case entity_creation_popup::EntityType::Ability:
+  case entity::EntityType::Ability:
     return "Abilitydefault";
 
-  case entity_creation_popup::EntityType::Effect:
+  case entity::EntityType::Effect:
     return "Effectdefault";
 
-  case entity_creation_popup::EntityType::None:
+  case entity::EntityType::None:
     return {};
   }
 
