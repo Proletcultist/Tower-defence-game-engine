@@ -2,38 +2,87 @@
 
 #include "entity_type.h"
 
+#include <cstddef>
 #include <map>
 #include <optional>
 #include <string>
 #include <vector>
 
 namespace hierarchy {
-struct HierarchyItem {
-  std::string name;
-};
+using EntityId = std::size_t;
+using LevelNodeId = std::size_t;
 
-struct HierarchySelection {
+struct HierarchyItem {
+  EntityId id;
   entity::EntityType type;
   std::string name;
 };
 
+struct LevelNode {
+  LevelNodeId id;
+  EntityId entityId;
+  std::vector<LevelNode> children;
+};
+
+enum class SelectionSource { Project, Level };
+
+struct HierarchySelection {
+  EntityId entityId;
+  LevelNodeId levelNodeId;
+  SelectionSource source;
+};
+
 class HierarchyViewModel {
 public:
-  void Add(entity::EntityType type);
+  HierarchyViewModel();
 
-  bool Remove(entity::EntityType type, const std::string &name);
+  EntityId Add(entity::EntityType type);
 
-  void Select(entity::EntityType type, const std::string &name);
+  bool AddToLevel(EntityId entityId, LevelNodeId parentNodeId);
+  bool IsInLevel(EntityId entityId) const;
+
+  bool OpenLevel(EntityId entityId);
+  bool CloseLevel(EntityId entityId);
+  bool IsLevelOpen(EntityId entityId) const;
+
+  bool Remove(EntityId entityId);
+  bool RemoveFromLevel(LevelNodeId nodeId);
+
+  void SelectProjectEntity(EntityId entityId);
+  void SelectLevelNode(LevelNodeId nodeId);
 
   const std::optional<HierarchySelection> &GetSelected() const;
 
-  const std::vector<HierarchyItem> *FindItems(entity::EntityType type) const;
+  const std::vector<HierarchyItem> *
+  FindProjectItems(entity::EntityType type) const;
+
+  const HierarchyItem *FindEntity(EntityId entityId) const;
+  const LevelNode *GetOpenLevelRoot() const;
 
 private:
-  std::map<entity::EntityType, std::vector<HierarchyItem>> items_;
+  std::map<entity::EntityType, std::vector<HierarchyItem>> projectEntities_;
+  std::vector<LevelNode> levelRoots_;
 
   std::map<entity::EntityType, std::size_t> nextIndex_;
+  EntityId nextEntityId_ = 0;
+  LevelNodeId nextLevelNodeId_ = 1;
+  std::optional<LevelNodeId> openedLevelNodeId_;
   std::optional<HierarchySelection> selected_;
+
+  static LevelNode *FindLevelNode(std::vector<LevelNode> &nodes,
+                                  LevelNodeId nodeId);
+
+  static const LevelNode *FindLevelNode(const std::vector<LevelNode> &nodes,
+                                        LevelNodeId nodeId);
+
+  static bool ContainsEntity(const std::vector<LevelNode> &nodes,
+                             EntityId entityId);
+
+  static bool RemoveLevelNode(std::vector<LevelNode> &nodes,
+                              LevelNodeId nodeId);
+
+  static void RemoveEntityReferences(std::vector<LevelNode> &nodes,
+                                     EntityId entityId);
 
   static std::string GetDefaultName(entity::EntityType type);
 };

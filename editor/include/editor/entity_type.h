@@ -3,6 +3,7 @@
 namespace entity {
 enum class EntityType {
   None,
+  Level,
   GameMapBackground,
   GameMap,
   Texture,
