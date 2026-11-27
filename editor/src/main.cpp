@@ -67,7 +67,8 @@ int main() {
 
     ImGui::SameLine(0.0f, spacing);
 
-    inspector::DrawInspectorPanel(inspectorWidth, panelHeight);
+    inspector::DrawInspectorPanel(inspectorWidth, panelHeight,
+                                  hierarchyViewModel);
 
     ImGui::End();
 

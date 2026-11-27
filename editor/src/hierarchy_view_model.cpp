@@ -4,6 +4,43 @@
 #include <stdexcept>
 #include <utility>
 
+namespace {
+entity::EntityProperties MakeDefaultProperties(entity::EntityType type) {
+  switch (type) {
+  case entity::EntityType::None:
+    return std::monostate{};
+  case entity::EntityType::Level:
+    return entity::LevelProperties{};
+  case entity::EntityType::GameMapBackground:
+    return entity::GameMapBackgroundProperties{};
+  case entity::EntityType::GameMap:
+    return entity::GameMapProperties{};
+  case entity::EntityType::Texture:
+    return entity::TextureProperties{};
+  case entity::EntityType::EnemyType:
+    return entity::EnemyTypeProperties{};
+  case entity::EntityType::EnemyWave:
+    return entity::EnemyWaveProperties{};
+  case entity::EntityType::EnemyWaveOnPath:
+    return entity::EnemyWaveOnPathProperties{};
+  case entity::EntityType::EnemyPath:
+    return entity::EnemyPathProperties{};
+  case entity::EntityType::TowerType:
+    return entity::TowerTypeProperties{};
+  case entity::EntityType::TowerSpot:
+    return entity::TowerSpotProperties{};
+  case entity::EntityType::DamageType:
+    return entity::DamageTypeProperties{};
+  case entity::EntityType::Ability:
+    return entity::AbilityProperties{};
+  case entity::EntityType::Effect:
+    return entity::EffectProperties{entity::PoisoningEffectProperties{}};
+  }
+
+  return std::monostate{};
+}
+} // namespace
+
 namespace hierarchy {
 HierarchyViewModel::HierarchyViewModel() { Add(entity::EntityType::Level); }
 
@@ -24,7 +61,9 @@ EntityId HierarchyViewModel::Add(entity::EntityType type) {
       GetDefaultName(type) + "_" + std::to_string(++nextIndex_[type]);
 
   const EntityId entityId = nextEntityId_++;
-  projectEntities_[type].push_back({entityId, type, name});
+
+  projectEntities_[type].push_back(
+      {entityId, type, name, MakeDefaultProperties(type)});
 
   if (type == entity::EntityType::Level) {
     const LevelNodeId rootNodeId = nextLevelNodeId_++;
@@ -115,7 +154,6 @@ bool HierarchyViewModel::Remove(EntityId entityId) {
       continue;
     }
 
-    // Пока нельзя удалить единственный Level проекта.
     if (item->type == entity::EntityType::Level) {
       return false;
     }
@@ -194,6 +232,23 @@ HierarchyViewModel::FindProjectItems(entity::EntityType type) const {
   }
 
   return &category->second;
+}
+
+HierarchyItem *HierarchyViewModel::FindEntity(EntityId entityId) {
+  for (auto &[type, items] : projectEntities_) {
+    (void)type;
+
+    const auto item = std::find_if(items.begin(), items.end(),
+                                   [entityId](const HierarchyItem &candidate) {
+                                     return candidate.id == entityId;
+                                   });
+
+    if (item != items.end()) {
+      return &*item;
+    }
+  }
+
+  return nullptr;
 }
 
 const HierarchyItem *HierarchyViewModel::FindEntity(EntityId entityId) const {

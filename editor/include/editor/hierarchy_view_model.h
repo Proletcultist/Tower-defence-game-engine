@@ -1,6 +1,6 @@
 #pragma once
 
-#include "entity_type.h"
+#include "editor/entity.h"
 
 #include <cstddef>
 #include <map>
@@ -9,14 +9,9 @@
 #include <vector>
 
 namespace hierarchy {
-using EntityId = std::size_t;
+using EntityId = entity::EntityId;
 using LevelNodeId = std::size_t;
-
-struct HierarchyItem {
-  EntityId id;
-  entity::EntityType type;
-  std::string name;
-};
+using HierarchyItem = entity::Entity;
 
 struct LevelNode {
   LevelNodeId id;
@@ -56,7 +51,9 @@ public:
   const std::vector<HierarchyItem> *
   FindProjectItems(entity::EntityType type) const;
 
+  HierarchyItem *FindEntity(EntityId entityId);
   const HierarchyItem *FindEntity(EntityId entityId) const;
+
   const LevelNode *GetOpenLevelRoot() const;
 
 private:

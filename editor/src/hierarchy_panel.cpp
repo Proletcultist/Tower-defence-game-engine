@@ -83,6 +83,71 @@ static void DrawProjectDefinitions(HierarchyViewModel &viewModel) {
   DrawCategory(viewModel, "Effects", entity::EntityType::Effect);
 }
 
+static void DrawParentOptions(HierarchyViewModel &viewModel,
+                              const LevelNode &node, bool &addRequested,
+                              LevelNodeId &chosenParentId) {
+  const HierarchyItem *item = viewModel.FindEntity(node.entityId);
+
+  if (item == nullptr) {
+    return;
+  }
+
+  ImGui::PushID(static_cast<int>(node.id));
+
+  if (ImGui::BeginMenu(item->name.c_str())) {
+    if (ImGui::MenuItem("Add as child here")) {
+      chosenParentId = node.id;
+      addRequested = true;
+    }
+
+    for (const LevelNode &child : node.children) {
+      DrawParentOptions(viewModel, child, addRequested, chosenParentId);
+    }
+
+    ImGui::EndMenu();
+  }
+
+  ImGui::PopID();
+}
+
+static void DrawAddToLevel(HierarchyViewModel &viewModel) {
+  const auto &selected = viewModel.GetSelected();
+
+  if (!selected || selected->source != SelectionSource::Project) {
+    return;
+  }
+
+  const HierarchyItem *selectedItem = viewModel.FindEntity(selected->entityId);
+
+  if (selectedItem == nullptr ||
+      selectedItem->type == entity::EntityType::Level) {
+    return;
+  }
+
+  if (ImGui::Button("Add selected to level")) {
+    ImGui::OpenPopup("ChooseLevelParentPopup");
+  }
+
+  bool addRequested = false;
+  LevelNodeId chosenParentId = 0;
+
+  if (ImGui::BeginPopup("ChooseLevelParentPopup")) {
+    const LevelNode *root = viewModel.GetOpenLevelRoot();
+
+    if (root == nullptr) {
+      ImGui::TextWrapped("Open a level before adding entities to it.");
+    } else {
+      DrawParentOptions(viewModel, *root, addRequested, chosenParentId);
+    }
+
+    ImGui::EndPopup();
+  }
+
+  if (addRequested && !viewModel.AddToLevel(selectedItem->id, chosenParentId)) {
+    ImGui::TextWrapped("Could not add the entity to the selected parent.");
+  }
+}
+
 static void DrawLevelNode(HierarchyViewModel &viewModel, const LevelNode &node,
                           LevelNodeId &nodeIdToRemove) {
   const HierarchyItem *item = viewModel.FindEntity(node.entityId);
@@ -185,6 +250,8 @@ void DrawHierarchyPanel(float width, float height,
   }
 
   DrawProjectDefinitions(viewModel);
+  ImGui::Spacing();
+  DrawAddToLevel(viewModel);
   ImGui::Spacing();
   DrawLevelTree(viewModel);
 
