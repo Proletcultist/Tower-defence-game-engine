@@ -1,17 +1,14 @@
 #include "editor/inspector_panel.h"
-
 #include "editor/inspector_combat_properties.h"
 #include "editor/inspector_map_properties.h"
-
 #include "imgui.h"
-
 #include <cstdio>
 #include <type_traits>
 #include <variant>
 
 namespace inspector {
-namespace {
-const char *GetEntityTypeName(entity::EntityType type) {
+
+static const char *GetEntityTypeName(entity::EntityType type) {
   switch (type) {
   case entity::EntityType::None:
     return "None";
@@ -42,12 +39,11 @@ const char *GetEntityTypeName(entity::EntityType type) {
   case entity::EntityType::Effect:
     return "Effect";
   }
-
   return "Unknown";
 }
 
-void DrawProperties(entity::EntityProperties &properties,
-                    const hierarchy::HierarchyViewModel &viewModel) {
+static void DrawProperties(entity::EntityProperties &properties,
+                           const hierarchy::HierarchyViewModel &viewModel) {
   std::visit(
       [&viewModel](auto &value) {
         using T = std::decay_t<decltype(value)>;
@@ -85,7 +81,6 @@ void DrawProperties(entity::EntityProperties &properties,
       },
       properties);
 }
-} // namespace
 
 void DrawInspectorPanel(float width, float height,
                         hierarchy::HierarchyViewModel &viewModel) {
@@ -95,7 +90,6 @@ void DrawInspectorPanel(float width, float height,
   ImGui::Separator();
 
   const auto &selected = viewModel.GetSelected();
-
   if (!selected) {
     ImGui::TextWrapped("Select an entity from the hierarchy.");
     ImGui::EndChild();
@@ -103,7 +97,6 @@ void DrawInspectorPanel(float width, float height,
   }
 
   hierarchy::HierarchyItem *item = viewModel.FindEntity(selected->entityId);
-
   if (item == nullptr) {
     ImGui::TextWrapped("The selected entity could not be found.");
     ImGui::EndChild();
@@ -112,7 +105,6 @@ void DrawInspectorPanel(float width, float height,
 
   char nameBuffer[256]{};
   std::snprintf(nameBuffer, sizeof(nameBuffer), "%s", item->name.c_str());
-
   if (ImGui::InputText("Name", nameBuffer, sizeof(nameBuffer))) {
     item->name = nameBuffer;
   }
@@ -124,4 +116,5 @@ void DrawInspectorPanel(float width, float height,
 
   ImGui::EndChild();
 }
+
 } // namespace inspector
