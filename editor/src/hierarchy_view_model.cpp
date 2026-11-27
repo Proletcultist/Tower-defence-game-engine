@@ -4,7 +4,7 @@
 #include <stdexcept>
 #include <utility>
 
-namespace {
+namespace entity {
 entity::EntityProperties MakeDefaultProperties(entity::EntityType type) {
   switch (type) {
   case entity::EntityType::None:
@@ -39,7 +39,7 @@ entity::EntityProperties MakeDefaultProperties(entity::EntityType type) {
 
   return std::monostate{};
 }
-} // namespace
+} // namespace entity
 
 namespace hierarchy {
 HierarchyViewModel::HierarchyViewModel() { Add(entity::EntityType::Level); }
